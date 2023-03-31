@@ -1,0 +1,68 @@
+﻿@using Infrastructure.ViewModel;
+@model PermissionViewModel
+<h1>ادارة الصاحيات لل(@Model.RoleName)</h1>
+<br />
+<div class="card">
+    <div id="viewAll" class="card-body table-responsive">
+        <form asp-controller="Permissions" method="post" asp-action="Update" class="d-inline">
+            <input asp-for="@Model.RoleId" type="hidden" />
+            <table class="table table-striped" id="permissionTable">
+                <thead>
+                    <tr>
+                        <th>
+                            ادارة الصلاحية 
+                        </th>
+                        <th>
+                            اسم العمليات
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var moduleName in Enum.GetValues(typeof(Helper.PermissionModuleName)))
+                    {
+                        <tr>
+                    
+                            @switch (moduleName)
+                                {
+                                    case "Home":
+                                    <td>الرئيسة</td>
+                                        break;
+                                case "Accounts":
+                                    <td>الحسابات</td>
+                                    break;
+                                default:
+                                    <td>@moduleName</td>
+                                    break;
+                            }
+                    
+                        @for (int i = 0; i < Model.RoleClaims.Count(); i++)
+                        {
+                            if (Model.RoleClaims[i].Value.Split('.')[1] == moduleName.ToString())
+                            {
+                            <td>
+                                <input asp-for="@Model.RoleClaims[i].Value" type="hidden" />
+                                        @Model.RoleClaims[i].Value.Split('.')[2]
+                            </td>
+                            <td>
+                                <div class="form-check m-1">
+                                    <input asp-for="@Model.RoleClaims[i].Selected" class="form-check-input" />
+                                </div>
+                            </td>
+
+                            }
+                                
+                        }
+                        </tr>
+                    }
+                  
+                </tbody>
+            </table>
+            <div class="col-sm-12" style="padding: 20px 20px 0px 0px">
+                <button type="submit" id="save" class="btn btn-success">
+                    <i class="fa fa-check"></i>
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
